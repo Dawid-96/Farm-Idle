@@ -29,16 +29,18 @@ function renderMarket() {
     card.querySelector("[data-ref='stock']").textContent = stock;
 
     const qtyInput = card.querySelector("[data-ref='qty']");
-    qtyInput.max = stock;
-    qtyInput.value = Math.min(1, stock);
-
     const sellButton = card.querySelector("[data-action='sell']");
 
     // Button deaktivieren wenn kein Bestand
     if (stock <= 0) {
-    //   sellButton.disabled = true;
+      sellButton.disabled = true;
       qtyInput.disabled = true;
+      qtyInput.value = 0;
     } else {
+      qtyInput.max = stock;
+      qtyInput.value = 1;
+      qtyInput.min = 1;
+
       sellButton.onclick = () => {
         const qty = parseInt(qtyInput.value) || 0;
         sellItem(itemId, qty);
@@ -53,14 +55,12 @@ function renderMarket() {
 function sellItem(itemId, quantity) {
   const stock = window.state.inventory[itemId] || 0;
 
-  // Validierung
-  if (quantity <= 0) {
-    alert("Bitte eine gültige Menge eingeben!");
-    return;
-  }
-
-  if (quantity > stock) {
-    alert("Nicht genug auf Lager!");
+  // Sicherheits-Validierung (falls UI manipuliert wurde)
+  if (quantity <= 0 || quantity > stock) {
+    console.warn(
+      `Ungültiger Verkaufsversuch: ${quantity}x ${itemId} (Bestand: ${stock})`
+    );
+    renderMarket(); // UI neu rendern um Inkonsistenzen zu beheben
     return;
   }
 
@@ -78,7 +78,9 @@ function sellItem(itemId, quantity) {
   updateDisplay();
 
   console.log(
-    `${quantity}x ${CONFIG.ITEMS[itemId].name} für ${totalEarnings.toFixed(2)}G verkauft`
+    `${quantity}x ${CONFIG.ITEMS[itemId].name} für ${totalEarnings.toFixed(
+      2
+    )}G verkauft`
   );
 }
 

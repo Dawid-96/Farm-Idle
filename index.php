@@ -134,7 +134,7 @@ $username = htmlspecialchars($_SESSION["username"]);
                 </template>
 
                 <!-- Template für Markt -->
-                        <template id="tpl-market-item">
+                        <template id="tpl-market">
                             <article class="card" data-item-id="">
                                 <h3 class="item-title" data-ref="itemName">Item</h3>
                                 <p class="subtext price">Preis/Stück: <span data-ref="price"></span> G</p>
@@ -195,7 +195,7 @@ $username = htmlspecialchars($_SESSION["username"]);
                     <h3 class="tab-subtitle">Aktuelle Marktpreise </h3>
 
                     <!-- Markt Card -->
-                    <div class="grid"> </div>
+                    <div id="market-list" class="grid"> </div>
                 </section>
 
                 <!-- Inventar Tab -->
